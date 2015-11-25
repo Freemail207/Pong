@@ -9,10 +9,11 @@ var ball={
     y:300,
     height:10,
     width:10,
-    vX:2,
+    vX:3,
     vY:-2,
+    color: 'black',
     draw: function(){
-        ctx.fillStyle='black';
+        ctx.fillStyle=this.color;
         ctx.fillRect(this.x,this.y,this.height,this.width);
     },
 
@@ -27,9 +28,9 @@ var stick ={
     y:390,
     height:100,
     WIDTH:10,
-
+    color: 'black',
     draw: function(){
-        ctx.fillStyle='black';
+        ctx.fillStyle=this.color;
         ctx.fillRect(this.x,this.y,this.height,this.WIDTH);
     },
     move: function(e){
@@ -38,30 +39,31 @@ var stick ={
         prevY=this.y;
         var t = e.pageX;
         stick.x = t - stick.height / 2;
-
-
-        //  alert(e.pageX);
-    },
-    constructour:function(x,y,h){
-        this.x=x;
-        this.y=y;
-        this.height=h;
-
     }
 }
 
+var bonus = {
+    height:40,
+    width:40,
+    x:Math.random()*500,
+    y:Math.random()*350,
+    color:'red'
+};
+bonus.__proto__=ball;
 
 function play() {
     ball.draw();
+
     ball.update();
     example.onmousemove = stick.move;
     stick.draw();
     ctx.clearRect(0,example.height-10,stick.x,10);
     ctx.clearRect(stick.x+stick.height,example.height-10,example.width,10);
-    ctx.clearRect(4,4, example.width-5,example.height-14);
+    ctx.clearRect(1,1, example.width-2,example.height-11);
+    bonus.draw();
     ball.draw();
     checkKick();
-
+    checkBonus();
 
 
 
@@ -69,11 +71,12 @@ function play() {
 function checkKick (){
    if(ball.y<5){
        ball.vY*=-1;//top wall
+
    }
     if(ball.x<5){
         ball.vX*=-1;//left wall
     }
-    if(ball.x>example.width-5){
+    if(ball.x+ball.width>example.width){
         ball.vX*=-1; //right wall
     }
 //    if((ball.y+ball.height)>(example.height-10)&&ball.x<=stick.x&&ball.x>=(stick.x+stick.height)){
@@ -88,5 +91,27 @@ function checkKick (){
   }
 
 }
+function checkBonus(){
+    if(ball.y>bonus.y&&ball.x>bonus.x&&ball.y+ball.height<(bonus.y+bonus.height)&&ball.x+ball.width<(bonus.x+bonus.width)){
+       bonus.x=Math.random()*400;
+       bonus.y=Math.random()*350;
+       var event = Math.random()*3;
+        event= Math.floor(event);
+        switch (event){
+            case 0:
+                ball.height=40;
+                ball.width=40;
+                break;
+            case 1:
+                ball.height/=4;
+                ball.width/=4;
+                break;
+            case 2:
+                ball.vX+=5;
+                ball.vY+=5;
+                break;
+        }
+    }
 
+}
 var int = window.setInterval('play()', 10);
