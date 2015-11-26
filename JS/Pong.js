@@ -110,6 +110,9 @@ function checkBonus(){
                 ball.vX+=5;
                 ball.vY+=5;
                 break;
+            case 3:
+                stick.height+=20;
+                break;
         }
     }
 
